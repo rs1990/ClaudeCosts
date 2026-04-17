@@ -36,13 +36,13 @@ echo "Using Python: $PYTHON  ($(${PYTHON} --version))"
 
 # ── 2. Install Python dependencies ───────────────────────────────────────────
 
-echo "Installing dependencies (rumps + pyobjc)…"
+echo "Installing dependencies (rumps + pyobjc + matplotlib)…"
 "$PYTHON" -m pip install --quiet -r "$REPO_DIR/requirements.txt"
 
 # Verify rumps is importable with the chosen python
 if ! "$PYTHON" -c "import rumps" 2>/dev/null; then
     echo "ERROR: 'rumps' could not be imported after installation."
-    echo "Try running:  $PYTHON -m pip install rumps pyobjc-framework-Cocoa"
+    echo "Try running:  $PYTHON -m pip install rumps pyobjc-framework-Cocoa matplotlib"
     exit 1
 fi
 

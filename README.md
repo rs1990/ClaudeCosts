@@ -2,7 +2,7 @@
 
 A macOS menu bar app that reads your [Claude Code](https://claude.ai/code) session logs and shows live token usage and cost estimates — broken down by today, this month, and all time.
 
-![Menu bar showing ⚡ $0.42 | 38.5K tok](https://placeholder)
+<!-- Add a screenshot here after first release: ![Menu bar screenshot](docs/screenshot.png) -->
 
 ## Features
 
@@ -11,6 +11,7 @@ A macOS menu bar app that reads your [Claude Code](https://claude.ai/code) sessi
 - **Per-model breakdown** sorted by cost
 - **Auto-refreshes** every 15 minutes
 - **Manual refresh** button in the menu
+- **Claude API status** pulled from `status.anthropic.com` — shown in menu; title bar flashes ⚠️/🔴 on incidents
 - Runs silently in the background, auto-starts at login via LaunchAgent
 
 ## Requirements
@@ -22,14 +23,14 @@ A macOS menu bar app that reads your [Claude Code](https://claude.ai/code) sessi
 ## Installation
 
 ```bash
-git clone https://github.com/your-username/claude-usage-monitor.git
-cd claude-usage-monitor
+git clone https://github.com/rs1990/ClaudeCosts.git
+cd ClaudeCosts
 bash install.sh
 ```
 
 The installer:
 1. Detects your Python 3 installation
-2. Installs `rumps` and `pyobjc-framework-Cocoa` via pip
+2. Installs `rumps`, `pyobjc-framework-Cocoa`, and `matplotlib` via pip
 3. Copies the script to `~/.claude/`
 4. Registers a LaunchAgent so the app starts automatically at login
 5. Launches the app immediately
@@ -41,7 +42,7 @@ Look for the **⚡** icon in your menu bar.
 If you'd rather not use the LaunchAgent:
 
 ```bash
-pip install rumps pyobjc-framework-Cocoa
+pip install rumps pyobjc-framework-Cocoa matplotlib
 python3 claude_usage_monitor.py
 ```
 
@@ -83,5 +84,6 @@ No data leaves your machine. No API calls are made.
 |---|---|
 | ⚡ icon not appearing | Check `~/.claude/usage_monitor_error.log` |
 | `$0.00` cost always | Verify `~/.claude/projects/` exists and contains `.jsonl` files |
-| `import rumps` fails | Run `python3 -m pip install rumps pyobjc-framework-Cocoa` manually |
+| `import rumps` fails | Run `python3 -m pip install rumps pyobjc-framework-Cocoa matplotlib` manually |
 | App not starting at login | Run `launchctl load ~/Library/LaunchAgents/com.claude.usage-monitor.plist` |
+| Status shows "unavailable" | Check network connectivity; status is fetched from `status.anthropic.com` |
