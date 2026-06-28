@@ -1,0 +1,49 @@
+name: Build & Release DMG
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  build:
+    runs-on: macos-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          pip install py2app
+          pip install -r requirements.txt
+
+      - name: Build .app
+        run: python setup.py py2app
+
+      - name: Install create-dmg
+        run: brew install create-dmg
+
+      - name: Package DMG
+        run: |
+          create-dmg \
+            --volname "ClaudeCosts" \
+            --window-size 540 380 \
+            --icon-size 128 \
+            --icon "ClaudeCosts.app" 160 160 \
+            --app-drop-link 380 160 \
+            --no-internet-enable \
+            ClaudeCosts.dmg \
+            dist/
+
+      - name: Upload DMG to GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: ClaudeCosts.dmg
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
